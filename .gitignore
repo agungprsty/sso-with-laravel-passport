@@ -1,0 +1,6 @@
+# Editor
+.vscode
+
+# Container file
+/docker/mysql/*
+!/docker/mysql/.gitkeep

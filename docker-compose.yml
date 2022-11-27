@@ -1,0 +1,60 @@
+version: "3.9"
+
+networks:
+  laravel-oauth-server:
+    name: laravel-oauth-server
+    
+services:
+  app:
+    container_name: laravel-oauth-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - laravel-oauth-server
+  
+  mysql:
+    container_name: laravel-oauth-mysql
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=laraveloauthserver
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=admin
+    ports:
+      - "3307:3306"
+    networks:
+      - laravel-oauth-server
+      
+  web:
+    container_name: laravel-oauth-web
+    image: nginx:stable-alpine
+    restart: always
+    ports:
+      - "83:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel-oauth-server
+
+  phpmyadmin:
+    container_name: laravel-oauth-phpmyadmin
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "82:80"
+    depends_on:
+      - mysql
+    links:
+      - "mysql:db"
+    networks:
+      - laravel-oauth-server
+
