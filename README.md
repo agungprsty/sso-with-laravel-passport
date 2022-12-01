@@ -55,7 +55,7 @@ Next, click button ``Login``.
 ### Step 3: Set Credential to .env
 
 Copy:
-- Clien-ID
+- Client-ID
 - Redirect
 - Secret
 
